@@ -32,7 +32,8 @@ void cocktail(player * p, char *str)
   ENTERFUNCTION;
 
   /* Validate user age for US legal compliance */
-  if ( get_age(p) < 21 ) {
+  if ( get_age(p) < 21 )
+  {
     tell_player(p, " Sorry, you must be 21 years old to use this command.\n");
     EXITFUNCTION;
     return;
