@@ -57,7 +57,7 @@ A functioning [Playground Plus](https://github.com/talkers/pgplus) talk server.
      ^ZNotes    :^N * Try `cocktail list` if you want to browse the recipe list.
     ```
 
-1. Add the file `files/cocktail` provided in this repository to your talker's `files` directory.
+1. Add the file `files/cocktails` provided in this repository to your talker's `files` directory.
 
 1. Recompile using the standard PG+ compilation process.
 
