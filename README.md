@@ -29,7 +29,7 @@ This code is running on the [UberWorld](http://uberworld.org) talker.
 
 A functioning [Playground Plus](https://github.com/talkers/pgplus) talk server.
 
-## Installation & Configuration: Talker
+## Installation
 
 1. Add `src/cocktail.c` provided in this repo to your talker's `src` directory.
 
