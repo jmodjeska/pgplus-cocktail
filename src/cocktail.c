@@ -95,7 +95,8 @@ void cocktail(player * p, char *str)
     /* Strip newlines and create downcase variant of current line */
     t[strcspn(t, "\n")] = 0;
     strcpy(tdown, t);
-    for ( i = 0; t[i]; i++ ) {
+    for ( i = 0; t[i]; i++ )
+    {
       tdown[i] = tolower(tdown[i]);
     }
 
