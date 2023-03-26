@@ -26,6 +26,15 @@
 
 #define CLEAR(x) memset( x, '\0', 512 )
 
+void downcase(char *str)
+{
+  int i;
+  for ( i = 0; str[i]; i++ )
+  {
+    str[i] = tolower(str[i]);
+  }
+}
+
 void cocktail(player * p, char *str)
 {
   char *oldstack = stack;
@@ -59,13 +68,6 @@ void cocktail(player * p, char *str)
     return;
   }
 
-  /* Downcase search string */
-  int i;
-  for ( i = 0; str[i]; i++ )
-  {
-    str[i] = tolower(str[i]);
-  }
-
   /* Setup vars */
   char r_title[75] = "Cocktail recipe for: ";
   char vowels[5] = "aeiou";
@@ -79,6 +81,7 @@ void cocktail(player * p, char *str)
   int line_num = 1;
 
   /* Setup search string */
+  downcase(str);
   char search_key[512];
   sprintf(search_key, "name: %s", str);
 
@@ -95,10 +98,7 @@ void cocktail(player * p, char *str)
     /* Strip newlines and create downcase variant of current line */
     t[strcspn(t, "\n")] = 0;
     strcpy(tdown, t);
-    for ( i = 0; t[i]; i++ )
-    {
-      tdown[i] = tolower(tdown[i]);
-    }
+    downcase(tdown);
 
     /* List mode: capture drink names only */
     if ( (r_mode == 2) && (strstr(t, "name:")) )
@@ -188,17 +188,19 @@ void cocktail(player * p, char *str)
 
   /* List mode: format and show the cocktail list */
   char row[75] = "  ";
+  int d;
+
   if ( r_mode == 2 )
   {
     stack += sprintf(stack, "\n");
-    for ( i = 0; i < r_count; i++ )
+    for ( d = 0; d < r_count; d++ )
     {
-      strcat(row, drinks[i]);
+      strcat(row, drinks[d]);
       /* Comma-separate list items */
-      if ( i < (r_count - 1) ) strcat(row, ", ");
+      if ( d < (r_count - 1) ) strcat(row, ", ");
 
       /* Fancy line wrapping */
-      if ( (strlen(row) > 55) || (i == (r_count-1)) )
+      if ( (strlen(row) > 55) || (d == (r_count-1)) )
       {
         stack += sprintf(stack, "%s\n", row);
         strcpy(row, "  ");
