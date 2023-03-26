@@ -1147,3 +1147,21 @@ ingredient: White grapes
 amount: 5
 unit: whole
 preparation: Shaken
+
+name: Paper Plane
+timing: Pre-dinner
+taste: mysterious
+ingredients:
+ingredient: Amaro Nonino
+amount: 1.5
+unit: oz
+ingredient: Aperol
+amount: 1.5
+unit: oz
+ingredient: Bourbon
+amount: 1.5
+unit: oz
+ingredient: Lemon juice (strined)
+amount: 1.5
+unit: oz
+preparation: Shaken
