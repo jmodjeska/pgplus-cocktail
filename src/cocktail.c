@@ -59,7 +59,7 @@ void cocktail(player * p, char *str)
     return;
   }
 
-  /* Downcase search string and remove apostrophes */
+  /* Downcase search string */
   int i;
   for ( i = 0; str[i]; i++ )
   {
@@ -74,9 +74,9 @@ void cocktail(player * p, char *str)
   char t[512];               // Temp (current file line)
   char tdown[512];           // Temp (current file line, downcased)
   char drinks[500][32];      // List of drinks
-  int r_flag = 0;            // Flag: 0: search; 1: matched; 2: list
+  int r_mode = 0;            // Mode: 0: Search; 1: Capture; 2: List
+  int r_count = 0;           // Results counter
   int line_num = 1;
-  int find_result = 0;
 
   /* Setup search string */
   char search_key[512];
@@ -85,33 +85,31 @@ void cocktail(player * p, char *str)
   /* Config for list mode */
   if ( strcmp(str, "list" ) == 0 )
   {
-    r_flag = 2;
+    r_mode = 2;
     strncpy(r_title, "Available drink recipes", 23);
   }
 
   /* Search the recipe DB for the drink name */
-  while ( fgets(t, 512, fp) != NULL)
+  while ( fgets(t, 512, fp) != NULL )
   {
-    /* Create downcase variant of current line; strip newlines */
+    /* Strip newlines and create downcase variant of current line */
+    t[strcspn(t, "\n")] = 0;
     strcpy(tdown, t);
-    for ( i = 0; t[i]; i++ )
-    {
+    for ( i = 0; t[i]; i++ ) {
       tdown[i] = tolower(tdown[i]);
-      tdown[strcspn(tdown, "\n")] = 0;
-      t[strcspn(t, "\n")] = 0;
     }
 
     /* List mode: capture drink names only */
-    if ( (r_flag == 2) && (strstr(t, "name:")) )
+    if ( (r_mode == 2) && (strstr(t, "name:")) )
     {
       memmove(tdown, tdown+6, strlen(tdown));
-      strcpy(drinks[find_result], tdown);
-      find_result++;
+      strcpy(drinks[r_count], tdown);
+      r_count++;
     }
 
-    /* If a match was previously found, continue capturing results
-       until the last line of the recipe */
-    else if ( r_flag == 1 )
+    /* Capture mode: If a match was previously found, continue capturing
+       results until the last line of the recipe */
+    else if ( r_mode == 1 )
     {
       if ( strstr(t, "timing:") )
       {
@@ -154,54 +152,58 @@ void cocktail(player * p, char *str)
         t[0] = toupper(t[0]);
         sprintf(desc, "\n%s.", t);
         strcat(recipe, desc);
-        r_flag = 0;
-        break;
+        r_mode = 0;
       }
     }
 
-    /* Compare search string to current line to find "name: <drink>"
-       If match found, enable further capturing and set the title */
-    else if ( (r_flag == 0) && (strcmp(tdown, search_key) == 0) )
+    /* Search mode: Compare the search string to the current line to find
+       "name: <drink>". If match found, enable further capturing (Capture mode)
+       and set the title */
+    else if ( (r_mode == 0) && (strcmp(tdown, search_key) == 0) )
     {
       memmove(t, t+6, strlen(t));
       sprintf(recipe, "%s: ", t);
       strcat(r_title, t);
-      find_result++;
-      r_flag = 1;
+      r_count++;
+      r_mode = 1;
     }
 
+    /* Move to the next line of the DB file */
     line_num++;
-  }
-
-  if ( find_result == 0 )
-  {
-    tell_player(p, " Couldn't find a recipe for that drink.\n");
-    if (fp) fclose(fp);
-    EXITFUNCTION;
-    return;
   }
 
   if (fp) fclose(fp);
 
+  /* Handle unmatched search string */
+  if ( r_count == 0 )
+  {
+    tell_player(p, " Couldn't find a recipe for that drink.\n");
+    EXITFUNCTION;
+    return;
+  }
+
+  /* Begin output */
   pstack_mid(p, r_title);
 
   /* List mode: format and show the cocktail list */
   char row[75] = "  ";
-
-  if ( r_flag == 2 )
+  if ( r_mode == 2 )
   {
     stack += sprintf(stack, "\n");
-    for ( i = 0; i < find_result; i++ )
+    for ( i = 0; i < r_count; i++ )
     {
       strcat(row, drinks[i]);
-      if ( i < (find_result - 1) ) strcat(row, ", ");
+      /* Comma-separate list items */
+      if ( i < (r_count - 1) ) strcat(row, ", ");
 
-      if ( (strlen(row) > 55) || (i == (find_result-1)) ) {
+      /* Fancy line wrapping */
+      if ( (strlen(row) > 55) || (i == (r_count-1)) )
+      {
         stack += sprintf(stack, "%s\n", row);
         strcpy(row, "  ");
       }
     }
-    stack += sprintf(stack, "\n  There are %d recipes available.", find_result);
+    stack += sprintf(stack, "\n  There are %d recipes available.", r_count);
   }
 
   /* Tell player what their cocktail recipe is */
@@ -209,13 +211,16 @@ void cocktail(player * p, char *str)
     stack += sprintf(stack, "\n%s", recipe);
   }
 
+  /* Wrap up output */
   pstack_bot(p, "");
   stack = end_string(stack);
   tell_player(p, oldstack);
   stack = oldstack;
 
+  /* Clear some char arrays */
   CLEAR(t);
   CLEAR(tdown);
   CLEAR(recipe);
+
   EXITFUNCTION;
 }
