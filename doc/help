@@ -1,0 +1,7 @@
+:cocktail
+
+ ^ZCommand  :^N cocktail <drink>
+
+ ^ZDetails  :^N Request a recipe for the tasty beverage of your choice.
+
+ ^ZNotes    :^N * Try `cocktail list` if you want to browse the recipe list.
