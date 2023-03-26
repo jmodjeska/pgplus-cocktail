@@ -92,7 +92,7 @@ void cocktail(player * p, char *str)
     strncpy(r_title, "Available drink recipes", 23);
   }
 
-  /* Search the recipe DB for the drink name */
+  /* Main loop - search and capture recipe data */
   while ( fgets(t, 512, fp) != NULL )
   {
     /* Strip newlines and create downcase variant of current line */
