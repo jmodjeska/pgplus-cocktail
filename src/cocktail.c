@@ -26,13 +26,22 @@
 
 #define CLEAR(x) memset( x, '\0', 512 )
 
+/* strcmp for comparing pointers - used for alpha sort */
+int pstrcmp(const void *p1, const void *p2)
+{
+  ENTERFUNCTION;
+  int c = strcmp(p1, p2);
+  EXITFUNCTION;
+  return c;
+}
+
+/* downcase a string */
 void downcase(char *str)
 {
+  ENTERFUNCTION;
   int i;
-  for ( i = 0; str[i]; i++ )
-  {
-    str[i] = tolower(str[i]);
-  }
+  for ( i = 0; str[i]; i++ ) str[i] = tolower(str[i]);
+  EXITFUNCTION;
 }
 
 void cocktail(player * p, char *str)
@@ -71,14 +80,15 @@ void cocktail(player * p, char *str)
   /* Setup vars */
   char r_title[75] = "Cocktail recipe for: ";
   char vowels[5] = "aeiou";
-  char recipe[4096];         // Recipe content
-  char desc[512];            // Description string
-  char t[512];               // Temp (current file line)
-  char tdown[512];           // Temp (current file line, downcased)
-  char drinks[500][32];      // List of drinks
-  int r_mode = 0;            // Mode: 0: Search; 1: Capture; 2: List
-  int r_count = 0;           // Results counter
+  char recipe[4096];          // Recipe content
+  char desc[512];             // Description string
+  char t[512];                // Temp (current file line)
+  char tdown[512];            // Temp (current file line, downcased)
+  char drinks[500][32];       // List of drinks
+  int r_mode = 0;             // Mode: 0: Search; 1: Capture; 2: List
+  int r_count = 0;            // Results counter
   int line_num = 1;
+  int d_length = sizeof(drinks)/sizeof(drinks[0]); // 500
 
   /* Setup search string */
   downcase(str);
@@ -95,6 +105,11 @@ void cocktail(player * p, char *str)
   /* Main loop - search and capture recipe data */
   while ( fgets(t, 512, fp) != NULL )
   {
+    if ( r_count >= d_length )
+    {
+      log("error", "List of drinks in files/cocktails exceeds array max.");
+    }
+
     /* Strip newlines and create downcase variant of current line */
     t[strcspn(t, "\n")] = 0;
     strcpy(tdown, t);
@@ -169,7 +184,10 @@ void cocktail(player * p, char *str)
       r_mode = 1;
     }
 
-    /* Move to the next line of the DB file */
+    /* Clear some char arrays and move to next line of the DB file */
+    CLEAR(t);
+    CLEAR(tdown);
+    CLEAR(recipe);
     line_num++;
   }
 
@@ -190,17 +208,23 @@ void cocktail(player * p, char *str)
   char row[75] = "  ";
   int d;
 
+  /* Alpha sort the drinks list */
+  qsort(drinks, d_length, sizeof(*drinks), pstrcmp);
+
   if ( r_mode == 2 )
   {
     stack += sprintf(stack, "\n");
-    for ( d = 0; d < r_count; d++ )
+    for ( d = 0; d <= d_length; d++ )
     {
+      /* Skip empty elements */
+      if ( strlen(drinks[d]) < 1 ) continue;
+
       strcat(row, drinks[d]);
       /* Comma-separate list items */
-      if ( d < (r_count - 1) ) strcat(row, ", ");
+      if ( d < (d_length-1) ) strcat(row, ", ");
 
       /* Fancy line wrapping */
-      if ( (strlen(row) > 55) || (d == (r_count-1)) )
+      if ( (strlen(row) > 55) || (d == (d_length-1)) )
       {
         stack += sprintf(stack, "%s\n", row);
         strcpy(row, "  ");
@@ -219,11 +243,6 @@ void cocktail(player * p, char *str)
   stack = end_string(stack);
   tell_player(p, oldstack);
   stack = oldstack;
-
-  /* Clear some char arrays */
-  CLEAR(t);
-  CLEAR(tdown);
-  CLEAR(recipe);
 
   EXITFUNCTION;
 }
