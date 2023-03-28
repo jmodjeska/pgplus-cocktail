@@ -108,6 +108,7 @@ void cocktail(player * p, char *str)
     if ( r_count >= d_length )
     {
       log("error", "List of drinks in files/cocktails exceeds array max.");
+      break;
     }
 
     /* Strip newlines and create downcase variant of current line */
