@@ -24,7 +24,7 @@
 #include "include/fix.h"
 #include "include/proto.h"
 
-#define CLEAR(x) memset( x, '\0', 512 )
+#define CLEAR(x) memset( x, '\0', sizeof(x) )
 
 /* strcmp for comparing pointers - used for alpha sort */
 int pstrcmp(const void *p1, const void *p2)
@@ -187,7 +187,6 @@ void cocktail(player * p, char *str)
     /* Clear some char arrays and move to next line of the DB file */
     CLEAR(t);
     CLEAR(tdown);
-    CLEAR(recipe);
     line_num++;
   }
 
@@ -244,5 +243,7 @@ void cocktail(player * p, char *str)
   tell_player(p, oldstack);
   stack = oldstack;
 
+  CLEAR(recipe);
+  CLEAR(drinks);
   EXITFUNCTION;
 }
