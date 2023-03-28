@@ -219,8 +219,10 @@ void cocktail(player * p, char *str)
       /* Skip empty elements */
       if ( strlen(drinks[d]) < 1 ) continue;
 
+      /* Append drink to row */
       strcat(row, drinks[d]);
-      /* Comma-separate list items */
+
+      /* Comma-separate drinks */
       if ( d < (d_length-1) ) strcat(row, ", ");
 
       /* Fancy line wrapping */
