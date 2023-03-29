@@ -90,6 +90,10 @@ void cocktail(player * p, char *str)
   int line_num = 1;
   int d_length = sizeof(drinks)/sizeof(drinks[0]); // 500
 
+  /* Clear buffers to prevent corrupted output */
+  CLEAR(recipe);
+  CLEAR(drinks);
+
   /* Setup search string */
   downcase(str);
   char search_key[512];
