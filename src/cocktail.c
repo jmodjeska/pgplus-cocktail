@@ -250,6 +250,5 @@ void cocktail(player * p, char *str)
   stack = oldstack;
 
   CLEAR(recipe);
-  CLEAR(drinks);
   EXITFUNCTION;
 }
