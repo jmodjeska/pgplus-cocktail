@@ -85,10 +85,12 @@ void cocktail(player * p, char *str)
   char t[512];                // Temp (current file line)
   char tdown[512];            // Temp (current file line, downcased)
   char drinks[500][32];       // List of drinks
+  char row[75] = "  ";        // Row length (for list)
   int r_mode = 0;             // Mode: 0: Search; 1: Capture; 2: List
-  int r_count = 0;            // Results counter
+  int r_count = 0, d = 0;     // Results and drinks counters
   int line_num = 1;
-  int d_length = sizeof(drinks)/sizeof(drinks[0]); // 500
+  int d_length = sizeof(drinks)/sizeof(drinks[0]);
+  for ( d = 0; d < d_length; d++ ) { CLEAR(drinks[d]); }
 
   /* Clear buffers to prevent corrupted output */
   CLEAR(recipe);
@@ -209,9 +211,6 @@ void cocktail(player * p, char *str)
   pstack_mid(p, r_title);
 
   /* List mode: format and show the cocktail list */
-  char row[75] = "  ";
-  int d;
-
   /* Alpha sort the drinks list */
   qsort(drinks, d_length, sizeof(*drinks), pstrcmp);
 
