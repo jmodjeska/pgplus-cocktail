@@ -62,5 +62,6 @@ A functioning [Playground Plus](https://github.com/talkers/pgplus) talk server.
 1. Recompile using the standard PG+ compilation process.
 
 ## You might also like
+* [ChatGPT Bot for PG+](https://github.com/jmodjeska/pgplus-aiyu)
 * [PG+ Short Link Generator](https://github.com/jmodjeska/pgplus-shortlink)
 * [PG+ Test Harness](https://github.com/jmodjeska/pgplus-test)
