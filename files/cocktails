@@ -1148,6 +1148,19 @@ amount: 5
 unit: whole
 preparation: Shaken
 
+name: Ferrari
+timing: Pre-meal or after dinner
+taste: Bittersweet
+ingredients:
+ingredient: Fernet-Branca
+amount: 1.5
+unit: oz
+ingredient: Campari
+amount: 1.5
+unit: oz
+preparation: Stirred
+source: Liquor.com
+
 name: Paper Plane
 timing: Pre-dinner
 taste: mysterious
@@ -1161,7 +1174,26 @@ unit: oz
 ingredient: Bourbon
 amount: 1.5
 unit: oz
-ingredient: Lemon juice (strined)
+ingredient: Lemon juice (strained)
 amount: 1.5
 unit: oz
 preparation: Shaken
+
+name: Hanky Panky
+timing: After dinner
+taste: sophisticated
+ingredients:
+ingredient: Gin
+amount: 1.5
+unit: oz
+ingredient: Sweet Vermouth
+amount: 1.5
+unit: oz
+ingredient: Fernet-Branca
+amount: 2
+unit: dashes
+ingredient: Garnish
+amount: 1
+unit: orange twist
+preparation: Stirred
+source: Liquor.com
